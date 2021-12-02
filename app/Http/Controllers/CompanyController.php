@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRequest;
+use App\Http\Resources\CompanyResource;
 use App\Http\Traits\FileUploadScopes;
 use App\Models\Company;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
 class CompanyController extends Controller
@@ -20,13 +22,13 @@ class CompanyController extends Controller
      */
     public function index(): Response
     {
-        return response()->view('company.index');
+        return response()->view('pages.company.index');
     }
 
-    public function list(): JsonResponse
+    public function list(): ResourceCollection
     {
         $companies = Company::query()->latest()->paginate(8);
-        return response()->json($companies);
+        return CompanyResource::collection($companies);
     }
 
     /**
@@ -36,24 +38,17 @@ class CompanyController extends Controller
      */
     public function create(): Response
     {
-        return response()->view('company.form');
+        return response()->view('pages.company.form');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\CompanyRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CompanyRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'nullable|email',
-            'weblink' => 'nullable|url',
-            'logo' => 'nullable|file|mimes:jpg,jpeg,png'
-        ]);
-
         $company = new Company();
         $company->name = $request->input('name');
         $company->email = $request->input('email');
@@ -90,25 +85,18 @@ class CompanyController extends Controller
     public function edit(int $id): Response
     {
         $company = Company::query()->findOrFail($id);
-        return response()->view('company.form', compact('company'));
+        return response()->view('pages.company.form', compact('company'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\CompanyRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(CompanyRequest $request, int $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'nullable|email',
-            'weblink' => 'nullable|string',
-            'logo' => 'sometimes|file|mimes:jpg,jpeg,png'
-        ]);
-
         $company = Company::query()->findOrFail($id);
         $company->name = $request->input('name');
         $company->email = $request->input('email');
