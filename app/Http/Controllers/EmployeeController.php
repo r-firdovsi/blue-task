@@ -24,7 +24,7 @@ class EmployeeController extends Controller
 
     public function list(): ResourceCollection
     {
-        $employees = Employee::query()->latest()->paginate(8);
+        $employees = Employee::query()->latest()->paginate($this->perPage);
         return EmployeeResource::collection($employees);
     }
 

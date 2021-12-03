@@ -31,13 +31,14 @@ Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm
 Route::post('password/confirm', 'Auth\ConfirmPasswordController@confirm');
 Route::get('password/confirm', 'Auth\ConfirmPasswordController@showConfirmForm')->name('password.confirm');
 
+Route::middleware('auth')->group(function () {
+    Route::resources([
+        'companies' => 'CompanyController',
+        'employees' => 'EmployeeController'
+    ]);
 
-Route::resources([
-    'companies' => 'CompanyController',
-    'employees' => 'EmployeeController'
-]);
+    Route::get('company/list', 'CompanyController@list');
+    Route::get('employee/list', 'EmployeeController@list');
 
-Route::get('company/list', 'CompanyController@list');
-Route::get('employee/list', 'EmployeeController@list');
-
-Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/home', 'HomeController@index')->name('home');
+});

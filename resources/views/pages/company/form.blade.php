@@ -80,9 +80,19 @@
                                     </div>
 
                                     <div class="form-group">
+                                        @if(isset($company) && $company->logo)
+                                            <img class="w-50 image-input media-object round-media" id="image"
+                                                 src="{{asset('storage/company/logos/' . $company->logo)}}"/>
+                                        @else
+                                            <img class="w-50 image-input media-object round-media" id="image"
+                                                 src="{{asset('images/no-image.jpg')}}"/>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group">
                                         <label>{{__('main.logo')}}</label>
-                                        <input type="file" name="logo"
-                                               class="form-control @error('logo') is-invalid @enderror"
+                                        <input onchange="readURL(this, '#image')" type="file" name="logo"
+                                               class="form-control-file @error('logo') is-invalid @enderror"
                                                placeholder="{{__('main.logo')}}" autofocus/>
 
                                         @error('logo')
@@ -101,4 +111,19 @@
     </div>
 @endsection
 
-@section('page-level-scripts')@endsection
+@section('page-level-scripts')
+    <script>
+        function readURL(input, id) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $(id).attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+                $(id).show();
+            }
+        }
+    </script>
+@endsection

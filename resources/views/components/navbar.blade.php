@@ -23,7 +23,7 @@
                 <a class="nav-link {{
                                 url()->current() == route('companies.index') ||
                                 url()->current() == route('companies.create') ||
-                                (isset($id) && url()->current() == route('companies.edit', $id))
+                                (isset($company) && (url()->current() == route('companies.edit', $company->id)))
                                 ? 'active-page' : ''}}" href="{{route('companies.index')}}"
                    id="dashboardsDropdown">
                     <i class="icon-location_city nav-icon"></i>
@@ -35,7 +35,7 @@
                 <a class="nav-link {{
                                 url()->current() == route('employees.index') ||
                                 url()->current() == route('employees.create') ||
-                                (isset($id) && url()->current() == route('employees.edit', $id))
+                                (isset($employee) && (url()->current() == route('employees.edit', $employee->id)))
                                 ? 'active-page' : ''}}" href="{{route('employees.index')}}"
                    id="dashboardsDropdown">
                     <i class="icon-users nav-icon"></i>

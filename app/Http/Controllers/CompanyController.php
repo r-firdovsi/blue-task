@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Traits\FileUploadScopes;
+use App\Mail\NewCompanyMail;
 use App\Models\Company;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -27,7 +29,7 @@ class CompanyController extends Controller
 
     public function list(): ResourceCollection
     {
-        $companies = Company::query()->latest()->paginate(8);
+        $companies = Company::query()->latest()->paginate($this->perPage);
         return CompanyResource::collection($companies);
     }
 
@@ -59,6 +61,12 @@ class CompanyController extends Controller
         }
 
         if ($company->save()) {
+            $details = [
+                'title' => 'Mail from Blue Planet',
+                'body' => 'Company ' . $company->name . ' registered'
+            ];
+
+            Mail::to('your_receiver_email@gmail.com')->send(new NewCompanyMail($details));
             return redirect()->route('companies.index')->with('success', __('main.success'));
         } else {
             return back()->with('error', __('main.error'));
@@ -123,6 +131,10 @@ class CompanyController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         $company = Company::query()->findOrFail($id);
+
+        if ($company->logo) {
+            Storage::delete('public/company/logos/' . $company->logo);
+        }
 
         if ($company->delete()) {
             return back()->with('success', __('main.deleted'));

@@ -23,7 +23,7 @@ class CompanyResource extends JsonResource
             'name' => $company->name,
             'email' => $company->email,
             'weblink' => $company->weblink,
-            'logo' => $company->logo ? asset('storage/company/logos/' . $company->logo) : asset('storage/images/no-image.jpg')
+            'logo' => $company->logo ? asset('storage/company/logos/' . $company->logo) : asset('images/no-image.jpg')
         ];
     }
 }
