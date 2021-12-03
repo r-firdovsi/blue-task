@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.index');
 });
 
 
@@ -25,7 +25,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Password Reset Routes...
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset', 'Auth\ResetPasswordController@showLinkRequestForm')->name('password.request');
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/confirm', 'Auth\ConfirmPasswordController@confirm');
@@ -38,5 +38,6 @@ Route::resources([
 ]);
 
 Route::get('company/list', 'CompanyController@list');
+Route::get('employee/list', 'EmployeeController@list');
 
 Route::get('/home', 'HomeController@index')->name('home');

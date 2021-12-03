@@ -15,7 +15,9 @@ trait FileUploadScopes
     public function updateFile($newFile, $oldFile, $path): string
     {
         $file = Storage::put($path, $newFile);
-        Storage::delete($path . '/' . $oldFile);
+        if ($oldFile) {
+            Storage::delete($path . '/' . $oldFile);
+        }
         return basename($file);
     }
 
