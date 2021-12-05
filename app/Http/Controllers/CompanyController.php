@@ -66,8 +66,9 @@ class CompanyController extends Controller
                 'body' => 'Company ' . $company->name . ' registered'
             ];
 
-            Mail::to('your_receiver_email@gmail.com')->send(new NewCompanyMail($details));
-            return redirect()->route('companies.index')->with('success', __('main.success'));
+//            Mail::to('your_receiver_email@gmail.com')->send(new NewCompanyMail($details));
+
+            return redirect()->route('companies.index', '', 201)->with('success', __('main.success'));
         } else {
             return back()->with('error', __('main.error'));
         }
