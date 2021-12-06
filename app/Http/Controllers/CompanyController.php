@@ -7,6 +7,7 @@ use App\Http\Resources\CompanyResource;
 use App\Http\Traits\FileUploadScopes;
 use App\Mail\NewCompanyMail;
 use App\Models\Company;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -66,9 +67,9 @@ class CompanyController extends Controller
                 'body' => 'Company ' . $company->name . ' registered'
             ];
 
-//            Mail::to('your_receiver_email@gmail.com')->send(new NewCompanyMail($details));
+            Mail::to('your_receiver_email@gmail.com')->send(new NewCompanyMail($details));
 
-            return redirect()->route('companies.index', '', 201)->with('success', __('main.success'));
+            return redirect()->route('companies.index')->with('success', __('main.success'));
         } else {
             return back()->with('error', __('main.error'));
         }
@@ -80,9 +81,10 @@ class CompanyController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        //
+        $company = Company::query()->findOrFail($id);
+        return response()->json($company);
     }
 
     /**
@@ -138,7 +140,7 @@ class CompanyController extends Controller
         }
 
         if ($company->delete()) {
-            return back()->with('success', __('main.deleted'));
+            return redirect()->route('companies.index')->with('success', __('main.deleted'));
         } else {
             return back()->with('error', __('main.error'));
         }

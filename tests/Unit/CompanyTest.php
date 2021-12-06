@@ -3,69 +3,81 @@
 namespace Tests\Unit;
 
 use App\Models\Company;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class CompanyTest extends TestCase
 {
     public function test_can_create_company()
     {
+        $user = factory(User::class)->create();
+
         $data = [
             'email' => $this->faker->email,
-            'logo' => $this->faker->image('public/storage/company/logos', 100, 100, null, false),
             'weblink' => $this->faker->url
         ];
 
-        $this->post(route('companies.store'), $data)
-            ->assertStatus(422);
+        $this->actingAs($user)->post(route('companies.store'), $data)
+            ->assertStatus(302);
 
         $data['name'] = $this->faker->name;
 
-        $this->post(route('companies.store'), $data)
-            ->assertStatus(201);
+        $this->actingAs($user)->post(route('companies.store'), $data)
+            ->assertRedirect('/companies');
     }
 
     public function test_can_update_company()
     {
+        $user = factory(User::class)->create();
         $company = factory(Company::class)->create();
 
         $data = [
             'name' => $this->faker->name,
             'email' => $this->faker->email,
-            'logo' => $this->faker->image('public/storage/company/logos', 100, 100, null, false),
             'weblink' => $this->faker->url
         ];
 
-        $this->put(route('companies.update', $company->id), $data)
-            ->assertStatus(200);
+        $this->actingAs($user)->put(route('companies.update', $company->id), $data)
+            ->assertRedirect('/companies');
     }
 
     public function test_can_show_company()
     {
+        $user = factory(User::class)->create();
         $company = factory(Company::class)->create();
 
-        $this->get(route('companies.show', $company->id))
+        $this->actingAs($user)->get(route('companies.show', $company->id))
             ->assertStatus(200);
     }
 
     public function test_can_delete_company()
     {
+        $user = factory(User::class)->create();
         $company = factory(Company::class)->create();
 
-        $this->delete(route('companies.delete', $company->id))
-            ->assertStatus(204);
+        $this->actingAs($user)->delete(route('companies.destroy', $company->id))
+            ->assertRedirect('/companies');
     }
 
     public function test_can_list_companies()
     {
-        $companies = factory(Company::class, 2)->create()->map(function ($company) {
-            return $company->only(['id', 'name']);
-        });
+        $user = factory(User::class)->create();
+        $companies = factory(Company::class, 2)->create();
 
-        $this->get(route('companies.list'))
+        $this->actingAs($user)->get(route('companies.list'))
             ->assertStatus(200)
             ->assertJson($companies->toArray())
             ->assertJsonStructure([
-                '*' => ['id', 'name']
+                'data' => [
+                    ['id', 'name', 'email', 'weblink', 'logo']
+                ],
+                'links' => [
+                    'first', 'last', 'prev', 'next'
+                ],
+                'meta' => [
+                    'current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'
+                ]
             ]);
     }
 }
