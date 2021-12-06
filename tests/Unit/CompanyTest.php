@@ -67,16 +67,9 @@ class CompanyTest extends TestCase
 
         $this->actingAs($user)->get(route('companies.list'))
             ->assertStatus(200)
-            ->assertJson($companies->toArray())
             ->assertJsonStructure([
                 'data' => [
-                    ['id', 'name', 'email', 'weblink', 'logo']
-                ],
-                'links' => [
-                    'first', 'last', 'prev', 'next'
-                ],
-                'meta' => [
-                    'current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'
+                    '*' => ['id', 'name', 'email', 'weblink', 'logo']
                 ]
             ]);
     }
