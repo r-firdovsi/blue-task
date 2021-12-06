@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::get('company/list', 'CompanyController@list')->name('companies.list');
-    Route::get('employee/list', 'EmployeeController@list');
+    Route::get('employee/list', 'EmployeeController@list')->name('employees.list');
 
     Route::get('/home', 'HomeController@index')->name('home');
 });

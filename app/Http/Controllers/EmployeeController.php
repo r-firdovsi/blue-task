@@ -72,7 +72,8 @@ class EmployeeController extends Controller
      */
     public function show(int $id)
     {
-        //
+        $employee = Employee::query()->findOrFail($id);
+        return response()->json($employee);
     }
 
     /**
@@ -126,7 +127,7 @@ class EmployeeController extends Controller
         $employee = Employee::query()->findOrFail($id);
 
         if ($employee->delete()) {
-            return back()->with('success', __('main.deleted'));
+            return redirect()->route('employees.index')->with('success', __('main.deleted'));
         } else {
             return back()->with('error', __('main.error'));
         }

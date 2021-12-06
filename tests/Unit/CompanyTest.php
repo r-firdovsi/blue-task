@@ -63,7 +63,7 @@ class CompanyTest extends TestCase
     public function test_can_list_companies()
     {
         $user = factory(User::class)->create();
-        $companies = factory(Company::class, 2)->create();
+        factory(Company::class, 2)->create();
 
         $this->actingAs($user)->get(route('companies.list'))
             ->assertStatus(200)

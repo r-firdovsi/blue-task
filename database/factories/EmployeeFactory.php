@@ -8,14 +8,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Employee::class, function (Faker $faker) {
     return [
+        'company_id' => factory(Company::class)->create()->id,
         'firstname' => $faker->firstName,
         'lastname' => $faker->lastName,
         'email' => $faker->email,
         'phone' => $faker->phoneNumber
     ];
-});
-
-$factory->afterCreating(Employee::class, function (Employee $employee, Faker $faker) {
-    $company = factory(Company::class)->create();
-    $employee->company()->associate($company);
 });
